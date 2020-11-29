@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tic Tac Toe</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Tic Tac Toe</h1>
+        <div id="settings">
+            <div id="p1settings" class="settingsBox">
+                <h3>Player One Settings:</h3>
+                <p>Choose X or O</p>
+                <div id="p1switchSetup" class="switchSetup">
+                    <h4>X</h4>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                    <h4>O</h4>
+                </div>
+            </div>
+            <div id="p2settings" class="settingsBox">
+                <h3>Player Two Settings:</h3>
+                <p>Choose Player Two or AI</p>
+                <div id="p2switchSetup" class="switchSetup">
+                    <h4>Player Two</h4>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                    <h4>AI</h4>
+                </div>
+            </div>
+            <div id="buttonContainer">
+                <button type="button" id="gameStart">Start Game!</button>
+            </div>
+        </div>
+        <div id="gameContainer"></div>
+        <div id="sidebar"></div>
+    </body>
+    <script src="tictactoe.js"></script>
+</html>
