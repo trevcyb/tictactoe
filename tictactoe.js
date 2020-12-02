@@ -26,6 +26,30 @@ const domEx = (() => {
                 document.getElementById("settings").style.display = "none";
                 domEx.boardContainer.style.display = "grid";
             })
+        },
+        firstTurnDecider: function() {
+            if ((Math.floor(Math.random(1, 10)) % 2) === 0) {
+                p1play = true;
+                return p1play;
+            } else {
+                p1play = false;
+                return p1play;
+            }
+        },
+        turnDecider: function () {
+            if (p1play === true) {
+                p1play = false;
+                return p1play;
+            } else if (p1play === false) {
+                p1play = true;
+                return p1play;
+            }
+        },
+        move: function () {
+            const blocks = document.querySelectorAll(".grid-item");
+            blocks.forEach(block => block.addEventListener("mouseover", function () {
+                block.style.innerHTML = 
+            }));
         }
     }
 })()
@@ -35,16 +59,30 @@ const gameBoard = {
 }
 
 const player = name => {
-    return {
-        getName: () => {
-            return name;
-        },
-
-    }
+    const initPlayer = () => {
+        return name;
+    };
+    const setSymbol = () => {
+        i++;
+        domEx.symbolSelection();
+        if (i > 1) {
+            player.symbol = p2selection;
+            return player.symbol;
+        } else {
+            player.symbol = selection;
+            return player.symbol;
+        }
+    };
+    const symbol = setSymbol();
+    return { initPlayer, setSymbol , symbol}
 }
 
+let i = 0;
 domEx.createBoard()
 domEx.startGame()
+const jim = player('jim');
+const tom = player('tom');
+domEx.move()
 
 
 /* function player(name) {
@@ -90,6 +128,6 @@ domEx.startGame()
 } */
 
 
-const jim = player('jim');
+
 
 
