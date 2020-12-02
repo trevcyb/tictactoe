@@ -48,7 +48,7 @@ const domEx = (() => {
         move: function () {
             const blocks = document.querySelectorAll(".grid-item");
             blocks.forEach(block => block.addEventListener("mouseover", function () {
-                block.style.innerHTML = 
+                block.style.innerHTML = "x";
             }));
         }
     }
