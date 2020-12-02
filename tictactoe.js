@@ -1,17 +1,53 @@
+const domEx = (() => {
+    return {
+        boardContainer: document.getElementById("gameContainer"),
+        createBoard: function () {
+            this.boardContainer.style.display = "none";
+            for (let i = 0; i < gameBoard.board.length; i++) {
+                const boardPlace = document.createElement("div");
+                boardPlace.innerHTML = gameBoard.board[i];
+                boardPlace.setAttribute = ("placePosition", i);
+                this.boardContainer.appendChild(boardPlace).className = "grid-item";
+            }
+        },
+        symbolSelection: function () {
+            if (document.getElementById("p1").checked) {
+                selection = "O";
+                p2selection = "X";
+            } else {
+                selection = "X";
+                p2selection = "O";
+            }
+            return { selection, p2selection };
+        },
+        startGame: function () {
+            const gameStart = document.getElementById("gameStart");
+            gameStart.addEventListener("click", function () {
+                document.getElementById("settings").style.display = "none";
+                domEx.boardContainer.style.display = "grid";
+            })
+        }
+    }
+})()
+
 const gameBoard = {
     board: ["", "", "", "", "", "", "", "", ""],
-    get createBoard() {
-        boardContainer = document.getElementById("gameContainer");
-        for (let i = 0; i < this.board.length; i++) {
-            const boardPlace = document.createElement("div");
-            boardPlace.innerHTML = this.board[i];
-            boardPlace.setAttribute = ("placePosition", i);
-            boardContainer.appendChild(boardPlace).className = "grid-item";
-        }
+}
+
+const player = name => {
+    return {
+        getName: () => {
+            return name;
+        },
+
     }
 }
 
-function player(name) {
+domEx.createBoard()
+domEx.startGame()
+
+
+/* function player(name) {
     return {
         name,
         firstturn() {
@@ -41,7 +77,7 @@ function player(name) {
         }
     };
 }
-
+ */
 
 
 /* function gameFlow() {
@@ -53,10 +89,7 @@ function player(name) {
     return { newGame, newBoard, playerOne, playerTwo };
 } */
 
+
 const jim = player('jim');
 
-gameStart.addEventListener("click", function () {
-    document.getElementById("settings").style.display = "none";
-    gameBoard.createBoard;
-});
 
