@@ -59,9 +59,10 @@ const domEx = (() => {
                         gameBoard.board[choice] = p2selection;
                         block.innerHTML = p2selection;
                     }
+                gameBoard.checkWin();
                 domEx.turnDecider();
             }, {once: true}));
-        }
+        },
     }
 })()
 
@@ -76,7 +77,19 @@ const gameBoard = {
         [0, 4, 8],
         [2, 4, 6],
         [1, 4, 7]
-    ]
+    ],
+    checkWin: function(selection) {
+        let plays = this.board.reduce((a, e, i) => 
+            (e === selection) ? a.concat(i) : a, []);
+        let gameWon = null;
+        for (let [index, win] of this.winCombos.entries()) {
+            if (win.every(elem => plays.indexOf(elem) > -1)) {
+                gameWon = {index: index, selection: selection};
+                break;
+            }
+        }
+        return gameWon, plays;
+    }
 }
 
 const player = name => {
