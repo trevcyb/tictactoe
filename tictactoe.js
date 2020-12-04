@@ -27,33 +27,56 @@ const domEx = (() => {
                 domEx.boardContainer.style.display = "grid";
             })
         },
-        firstTurnDecider: function() {
-            if ((Math.floor(Math.random(1, 10)) % 2) === 0) {
+        firstTurnDecider: function () {
+            const infodiv = document.getElementById("infodiv");
+            if ((Math.floor(Math.random(1, 11)) % 2) === 0) {
                 p1play = true;
+                infodiv.innerHTML = "Player One's Turn";
                 return p1play;
             } else {
                 p1play = false;
+                infodiv.innerHTML = "Player Two's Turn";
                 return p1play;
             }
         },
         turnDecider: function () {
             p1play = !p1play;
-            return p1play
+            if (p1play === true) {
+                infodiv.innerHTML = "Player One's Turn";
+            } else {
+                infodiv.innerHTML = "Player Two's Turn";
+            }
+            return p1play;
         },
         move: function () {
             const blocks = document.querySelectorAll(".grid-item");
             blocks.forEach(block => block.addEventListener("click", function () {
                 choice = block.dataset.place;
-                gameBoard.board[choice] = player.symbol;
-                block.innerHTML = player.symbol;
+                    if (p1play === true) {
+                        gameBoard.board[choice] = selection;
+                        block.innerHTML = selection;
+                    } else {
+                        gameBoard.board[choice] = p2selection;
+                        block.innerHTML = p2selection;
+                    }
                 domEx.turnDecider();
-            },false));
+            }, {once: true}));
         }
     }
 })()
 
 const gameBoard = {
     board: ["", "", "", "", "", "", "", "", ""],
+    winCombos: [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        [1, 4, 7]
+    ]
 }
 
 const player = name => {
@@ -72,7 +95,7 @@ const player = name => {
         }
     };
     const symbol = setSymbol();
-    return { initPlayer, setSymbol , symbol}
+    return { initPlayer, setSymbol, symbol }
 }
 
 let i = 0;
