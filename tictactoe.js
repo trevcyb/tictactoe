@@ -3,22 +3,26 @@ const domEx = (() => {
         boardContainer: document.getElementById("gameContainer"),
         createBoard: function () {
             this.boardContainer.style.display = "none";
-            for (let i = 0; i < gameBoard.board.length; i++) {
+            for (let i = 0; i < gameBoard.origBoard.length; i++) {
                 const boardPlace = document.createElement("div");
-                boardPlace.innerHTML = gameBoard.board[i];
-                boardPlace.setAttribute("data-place", i);
+                boardPlace.innerHTML = "";
+                boardPlace.id = i;
                 this.boardContainer.appendChild(boardPlace).className = "grid-item";
             }
+            document.getElementById("restartButton").addEventListener("click", function () {
+                gameBoard.origBoard = Array.from(Array(9).keys());
+                game();
+            })
         },
         symbolSelection: function () {
             if (document.getElementById("p1").checked) {
-                selection = "O";
-                p2selection = "X";
+                player1 = 'O';
+                player2 = 'X';
             } else {
-                selection = "X";
-                p2selection = "O";
+                player1 = 'X';
+                player2 = 'O';
             }
-            return { selection, p2selection };
+            return { player1, player2 };
         },
         startGame: function () {
             const gameStart = document.getElementById("gameStart");
@@ -27,97 +31,93 @@ const domEx = (() => {
                 domEx.boardContainer.style.display = "grid";
             })
         },
-        firstTurnDecider: function () {
-            const infodiv = document.getElementById("infodiv");
-            if ((Math.floor(Math.random(1, 11)) % 2) === 0) {
-                p1play = true;
-                infodiv.innerHTML = "Player One's Turn";
-                return p1play;
-            } else {
-                p1play = false;
-                infodiv.innerHTML = "Player Two's Turn";
-                return p1play;
-            }
-        },
-        turnDecider: function () {
-            p1play = !p1play;
-            if (p1play === true) {
-                infodiv.innerHTML = "Player One's Turn";
-            } else {
-                infodiv.innerHTML = "Player Two's Turn";
-            }
-            return p1play;
-        },
         move: function () {
             const blocks = document.querySelectorAll(".grid-item");
-            blocks.forEach(block => block.addEventListener("click", function () {
-                choice = block.dataset.place;
-                    if (p1play === true) {
-                        gameBoard.board[choice] = selection;
-                        block.innerHTML = selection;
-                    } else {
-                        gameBoard.board[choice] = p2selection;
-                        block.innerHTML = p2selection;
-                    }
-                gameBoard.checkWin();
-                domEx.turnDecider();
-            }, {once: true}));
+            blocks.forEach(block => block.addEventListener("click", domEx.turnClick, { once: true }));
+        },
+        turnClick: function (block) {
+            if (typeof gameBoard.origBoard[block.target.id] == 'number') {
+                domEx.turn(block.target.id, player1);
+                if (!gameBoard.checkTie()) domEx.turn(gameBoard.bestSpot(), player2);
+            }
+        },
+        turn: function (placeID, player) {
+            gameBoard.origBoard[placeID] = player;
+            document.getElementById(placeID).innerText = player;
+            let gameWon = gameBoard.checkWin(gameBoard.origBoard, player);
+            if (gameWon) gameBoard.gameOver(gameWon)
+        }
+    }
+})()
+
+const gameBoard = (() => {
+    return {
+        origBoard: Array.from(Array(9).keys()),
+        winCombos: [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+            [1, 4, 7]
+        ],
+        checkWin: function (board, player) {
+            let plays = this.origBoard.reduce((a, e, i) =>
+                (e === player) ? a.concat(i) : a, []);
+            let gameWon = null;
+            for (let [index, win] of this.winCombos.entries()) {
+                if (win.every(elem => plays.indexOf(elem) > -1)) {
+                    gameWon = { index: index, player: player };
+                    break;
+                }
+            }
+            return gameWon;
+        },
+        gameOver: function (gameWon) {
+            for (let index of this.winCombos[gameWon.index]) {
+                document.getElementById(index).style.backgroundColor =
+                    gameWon.player == player1 ? "blue" : "red";
+            }
+            const blocks = document.querySelectorAll(".grid-item");
+            for (let i = 0; i < blocks.length; i++) {
+                blocks[i].removeEventListener('click', domEx.turnClick, { once: true })
+            }
+            this.declareWinner(gameWon.player == player1 ? "You Win!" : "You Lose!");
+        },
+        emptySquares: function () {
+            return this.origBoard.filter(s => typeof s == 'number');
+        },
+        bestSpot: function () {
+            return this.emptySquares()[0];
+        },
+        checkTie: function () {
+            const blocks = document.querySelectorAll(".grid-item");
+            if (this.emptySquares().length == 0) {
+                for (let i = 0; i < blocks.length; i++) {
+                    blocks[i].style.backgroundColor = "green";
+                    blocks[i].removeEventListener('click', domEx.turnClick, false);
+                }
+                this.declareWinner("Tie Game");
+                return true;
+            }
+            return false;
+        },
+        declareWinner: function (who) {
+            document.querySelector("#infodiv").innerText = who;
         },
     }
 })()
 
-const gameBoard = {
-    board: ["", "", "", "", "", "", "", "", ""],
-    winCombos: [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-        [1, 4, 7]
-    ],
-    checkWin: function(selection) {
-        let plays = this.board.reduce((a, e, i) => 
-            (e === selection) ? a.concat(i) : a, []);
-        let gameWon = null;
-        for (let [index, win] of this.winCombos.entries()) {
-            if (win.every(elem => plays.indexOf(elem) > -1)) {
-                gameWon = {index: index, selection: selection};
-                break;
-            }
-        }
-        return gameWon, plays;
-    }
-}
+function game() {
+    domEx.createBoard()
+    domEx.startGame()
+    domEx.symbolSelection()
+    domEx.move()
+};
 
-const player = name => {
-    const initPlayer = () => {
-        return name;
-    };
-    const setSymbol = () => {
-        i++;
-        domEx.symbolSelection();
-        if (i = 1) {
-            player.symbol = selection;
-            return player.symbol;
-        } else {
-            player.symbol = p2selection;
-            return player.symbol;
-        }
-    };
-    const symbol = setSymbol();
-    return { initPlayer, setSymbol, symbol }
-}
-
-let i = 0;
-domEx.createBoard()
-domEx.startGame()
-domEx.firstTurnDecider()
-const jim = player('jim');
-const tom = player('tom');
-domEx.move()
+game();
 
 
 
