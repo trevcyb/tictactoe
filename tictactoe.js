@@ -9,10 +9,6 @@ const domEx = (() => {
                 boardPlace.id = i;
                 this.boardContainer.appendChild(boardPlace).className = "grid-item";
             }
-            document.getElementById("restartButton").addEventListener("click", function () {
-                gameBoard.origBoard = Array.from(Array(9).keys());
-                game();
-            })
         },
         symbolSelection: function () {
             if (document.getElementById("p1").checked) {
