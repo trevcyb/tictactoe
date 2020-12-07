@@ -2,7 +2,6 @@ const domEx = (() => {
     return {
         boardContainer: document.getElementById("gameContainer"),
         createBoard: function () {
-            this.boardContainer.style.display = "none";
             for (let i = 0; i < gameBoard.origBoard.length; i++) {
                 const boardPlace = document.createElement("div");
                 boardPlace.innerHTML = "";
@@ -22,6 +21,7 @@ const domEx = (() => {
         },
         startGame: function () {
             const gameStart = document.getElementById("gameStart");
+            this.boardContainer.style.display = "none";
             gameStart.addEventListener("click", function () {
                 document.getElementById("settings").style.display = "none";
                 domEx.boardContainer.style.display = "grid";
@@ -34,14 +34,26 @@ const domEx = (() => {
         turnClick: function (block) {
             if (typeof gameBoard.origBoard[block.target.id] == 'number') {
                 domEx.turn(block.target.id, player1);
-                if (!gameBoard.checkTie()) domEx.turn(gameBoard.bestSpot(), player2);
+                if (!gameBoard.checkTie()) {
+                    domEx.turn(gameBoard.bestSpot(), player2);
+                }
             }
         },
         turn: function (placeID, player) {
             gameBoard.origBoard[placeID] = player;
             document.getElementById(placeID).innerText = player;
             let gameWon = gameBoard.checkWin(gameBoard.origBoard, player);
-            if (gameWon) gameBoard.gameOver(gameWon)
+            if (gameWon) {
+                gameBoard.gameOver(gameWon);
+            }
+        },
+        restart: function() {
+            document.getElementById("restartButton").addEventListener("click", function() {
+                gameBoard.origBoard = Array.from(Array(9).keys);
+                document.getElementById("settings").style.display = "grid";
+                document.querySelectorAll(".grid-item").forEach(item => item.remove());
+                domEx.createBoard();
+            })
         }
     }
 })()
@@ -111,6 +123,7 @@ function game() {
     domEx.startGame()
     domEx.symbolSelection()
     domEx.move()
+    domEx.restart()
 };
 
 game();

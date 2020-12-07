@@ -31,7 +31,7 @@ h1 {
 }
 
 #settings {
-    display: grid;
+    display: none;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
     grid-gap: 3px;
@@ -150,4 +150,8 @@ input:checked + .slider:before {
     transition: ease 0.2s;
     background-color: white;
     border-color:white;
+}
+
+.winner {
+    background-color: blue;
 }
