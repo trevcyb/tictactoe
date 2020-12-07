@@ -155,3 +155,36 @@ input:checked + .slider:before {
 .winner {
     background-color: blue;
 }
+
+#restartButton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid orange;
+    border-radius: 4%;
+    background-color:orange;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    margin-top: 70px;
+}
+
+#restartButton:hover {
+    transition: ease 0.5s;
+    background-color: rgb(1, 211, 1);
+    border-color:  rgb(1, 211, 1);
+}
+
+#restartButton:active {
+    transition: ease 0.2s;
+    background-color: white;
+    border-color:white;
+}
+
+#infodiv {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    margin-top: 30px;
+}
