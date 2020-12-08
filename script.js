@@ -1,5 +1,8 @@
 const ticTacToeGame = new TicTacToeGame();
 ticTacToeGame.start();
+document.getElementById("restartButton").addEventListener("click", function() {
+    location.reload();
+})
 
 function TicTacToeGame() {
     const board = new Board();
@@ -65,6 +68,11 @@ function Board() {
                     positions[index].className += " winner";
                 })
             }
+            if(isWinningCombo === true && pos0InnerText === 'X') {
+                document.getElementById("infodiv").innerText = "You Win!!";
+            } else if(isWinningCombo === true && pos0InnerText ==='O') {
+                document.getElementById("infodiv").innerText = "You Lose :(";
+            }
         });
         return winner;
     }
@@ -78,7 +86,7 @@ function Player1(board) {
     }
 
     function handleTurnTaken(event) {
-        event.target.innerText = "X";
+        event.target.innerText = 'X';
         board.positions
             .forEach(el => el.removeEventListener("click", handleTurnTaken));
     }
@@ -89,6 +97,6 @@ function Player2(board) {
         const availablePositions = 
             board.positions.filter((p) => p.innerText === "");
         const move = Math.floor(Math.random() * availablePositions.length);
-        availablePositions[move].innerText = "O";
+        availablePositions[move].innerText = 'O';
     }
 }
